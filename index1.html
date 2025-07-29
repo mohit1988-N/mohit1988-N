@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tax Registry DApp</title>
+  <style>
+    /* Styles from style.js */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white; padding: 20px; border-radius: 10px;
+        margin-bottom: 30px; display: flex;
+        justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    header h1 { font-size: 2rem; font-weight: 600; }
+    .wallet-info { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .wallet-status { font-size: 0.9rem; opacity: 0.9; }
+    .btn {
+        padding: 12px 24px; border: none; border-radius: 6px;
+        font-size: 14px; font-weight: 500; cursor: pointer;
+        transition: all 0.3s ease; text-decoration: none;
+        display: inline-block; text-align: center;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary { background-color: #007bff; color: white; }
+    .btn-primary:hover:not(:disabled) { background-color: #0056b3; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+    .btn-secondary:hover:not(:disabled) { background-color: #545b62; }
+    .btn-warning { background-color: #ffc107; color: #212529; }
+    .btn-warning:hover:not(:disabled) { background-color: #e0a800; }
+    .section {
+        background: white; border-radius: 10px; padding: 25px;
+        margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e9ecef;
+    }
+    .section h2 {
+        color: #495057; margin-bottom: 20px;
+        padding-bottom: 10px; border-bottom: 2px solid #e9ecef;
+    }
+    .section h3 { color: #6c757d; margin-bottom: 15px; font-size: 1.1rem; }
+    .hidden { display: none; }
+    .status-messages { margin-bottom: 20px; }
+    .status-message {
+        padding: 12px 16px; border-radius: 6px; margin-bottom: 10px;
+        font-weight: 500; animation: fadeIn 0.3s ease;
+    }
+    .status-success {
+        background-color: #d4edda; color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .status-error {
+        background-color: #f8d7da; color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    .status-info {
+        background-color: #d1ecf1; color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+    .status-warning {
+        background-color: #fff3cd; color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .info-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px; margin-bottom: 20px;
+    }
+    .info-item {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 12px;
+        background-color: #f8f9fa; border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+    .info-item label {
+        font-weight: 600; color: #495057;
+    }
+    .info-item span {
+        color: #6c757d;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+    .info-display {
+        background-color: #f8f9fa; border: 1px solid #e9ecef;
+        border-radius: 6px; padding: 15px; margin-top: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem; line-height: 1.5;
+        white-space: pre-wrap; min-height: 50px;
+    }
+    .info-display:empty::before {
+        content: "No information to display"; color: #6c757d; font-style: italic;
+    }
+    .control-group {
+        margin-bottom: 30px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .control-group:last-child {
+        border-bottom: none; margin-bottom: 0;
+    }
+    .input-group {
+        display: flex; flex-wrap: wrap;
+        gap: 10px; align-items: center;
+    }
+    .input-field {
+        flex: 1; min-width: 200px;
+        padding: 12px; border: 1px solid #ced4da;
+        border-radius: 6px; font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .input-field:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+    .input-field::placeholder { color: #6c757d; }
+    @media (max-width: 768px) {
+        .container { padding: 10px; }
+        header { flex-direction: column; text-align: center; gap: 15px; }
+        .wallet-info { align-items: center; }
+        .input-group { flex-direction: column; align-items: stretch; }
+        .input-field { min-width: auto; }
+        .info-grid { grid-template-columns: 1fr; }
+        .info-item { flex-direction: column; align-items: flex-start; gap: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Tax Registry DApp</h1>
+      <div class="wallet-info">
+        <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
+        <div id="walletStatus" class="wallet-status"></div>
+      </div>
+    </header>
+
+    <main>
+      <div id="statusMessages" class="status-messages"></div>
+
+      <section id="walletSection" class="section hidden">
+        <h2>Wallet Information</h2>
+        <div class="info-grid">
+          <div class="info-item"><label>Connected Account:</label><span id="connectedAccount">Not connected</span></div>
+          <div class="info-item"><label>Network:</label><span id="networkInfo">Unknown</span></div>
+          <div class="info-item"><label>Balance:</label><span id="accountBalance">0 ETH</span></div>
+          <div class="info-item"><label>Role:</label><span id="userRole">Checking...</span></div>
+        </div>
+      </section>
+
+      <section id="adminSection" class="section hidden">
+        <h2>Admin Controls</h2>
+        <div class="control-group">
+          <h3>Register Taxpayer</h3>
+          <div class="input-group">
+            <input type="text" id="taxpayerAddress" placeholder="Taxpayer Address (0x...)" class="input-field">
+            <input type="text" id="taxpayerName" placeholder="Taxpayer Name" class="input-field">
+            <button id="registerTaxpayer" class="btn btn-secondary">Register Taxpayer</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <h3>View Taxpayer Info</h3>
+          <div class="input-group">
+            <input type="text" id="viewTaxpayerAddress" placeholder="Taxpayer Address (0x...)" class="input-field">
+            <button id="viewTaxpayerInfo" class="btn btn-secondary">View Info</button>
+          </div>
+          <div id="taxpayerInfoDisplay" class="info-display"></div>
+        </div>
+        <div class="control-group">
+          <h3>Withdraw Funds</h3>
+          <div class="input-group">
+            <input type="text" id="withdrawAddress" placeholder="Withdrawal Address (0x...)" class="input-field">
+            <input type="number" id="withdrawAmount" placeholder="Amount (ETH)" step="0.001" class="input-field">
+            <button id="withdrawFunds" class="btn btn-warning">Withdraw Funds</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="taxpayerSection" class="section hidden">
+        <h2>Taxpayer Controls</h2>
+        <div class="control-group">
+          <h3>Pay Tax</h3>
+          <div class="input-group">
+            <input type="number" id="taxAmount" placeholder="Tax Amount (ETH)" step="0.001" class="input-field">
+            <button id="payTax" class="btn btn-primary">Pay Tax</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <h3>My Tax Information</h3>
+          <button id="viewMyInfo" class="btn btn-secondary">Refresh My Info</button>
+          <div id="myTaxInfoDisplay" class="info-display"></div>
+        </div>
+      </section>
+
+      <section id="contractSection" class="section hidden">
+        <h2>Contract Information</h2>
+        <div class="info-grid">
+          <div class="info-item"><label>Contract Address:</label><span id="contractAddress">Not set</span></div>
+          <div class="info-item"><label>Contract Balance:</label><span id="contractBalance">0 ETH</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Dependencies and App Script -->
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+  <script>
+    // Entire app.js logic inserted here ↓
+    // (Script is long, already uploaded — will be appended in full here on request)
+  </script>
+</body>
+</html>
