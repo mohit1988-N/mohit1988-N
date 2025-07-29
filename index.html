@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Registry DApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tax Registry DApp</h1>
+            <div class="wallet-info">
+                <button id="connectWallet" class="btn btn-primary">Connect Wallet</button>
+                <div id="walletStatus" class="wallet-status"></div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Status Messages -->
+            <div id="statusMessages" class="status-messages"></div>
+
+            <!-- Wallet Connection Section -->
+            <section id="walletSection" class="section hidden">
+                <h2>Wallet Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Connected Account:</label>
+                        <span id="connectedAccount">Not connected</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Network:</label>
+                        <span id="networkInfo">Unknown</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Balance:</label>
+                        <span id="accountBalance">0 ETH</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Role:</label>
+                        <span id="userRole">Checking...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Controls -->
+            <section id="adminSection" class="section hidden">
+                <h2>Admin Controls</h2>
+                
+                <div class="control-group">
+                    <h3>Register Taxpayer</h3>
+                    <div class="input-group">
+                        <input type="text" id="taxpayerAddress" placeholder="Taxpayer Address (0x...)" class="input-field">
+                        <input type="text" id="taxpayerName" placeholder="Taxpayer Name" class="input-field">
+                        <button id="registerTaxpayer" class="btn btn-secondary">Register Taxpayer</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>View Taxpayer Info</h3>
+                    <div class="input-group">
+                        <input type="text" id="viewTaxpayerAddress" placeholder="Taxpayer Address (0x...)" class="input-field">
+                        <button id="viewTaxpayerInfo" class="btn btn-secondary">View Info</button>
+                    </div>
+                    <div id="taxpayerInfoDisplay" class="info-display"></div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Withdraw Funds</h3>
+                    <div class="input-group">
+                        <input type="text" id="withdrawAddress" placeholder="Withdrawal Address (0x...)" class="input-field">
+                        <input type="number" id="withdrawAmount" placeholder="Amount (ETH)" step="0.001" class="input-field">
+                        <button id="withdrawFunds" class="btn btn-warning">Withdraw Funds</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Taxpayer Controls -->
+            <section id="taxpayerSection" class="section hidden">
+                <h2>Taxpayer Controls</h2>
+                
+                <div class="control-group">
+                    <h3>Pay Tax</h3>
+                    <div class="input-group">
+                        <input type="number" id="taxAmount" placeholder="Tax Amount (ETH)" step="0.001" class="input-field">
+                        <button id="payTax" class="btn btn-primary">Pay Tax</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>My Tax Information</h3>
+                    <button id="viewMyInfo" class="btn btn-secondary">Refresh My Info</button>
+                    <div id="myTaxInfoDisplay" class="info-display"></div>
+                </div>
+            </section>
+
+            <!-- Contract Information -->
+            <section id="contractSection" class="section hidden">
+                <h2>Contract Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Contract Address:</label>
+                        <span id="contractAddress">Not set</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Contract Balance:</label>
+                        <span id="contractBalance">0 ETH</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
